@@ -1,6 +1,7 @@
 training/datasets/CVC-MUSCIMA_StaffRemoval.zip
 training/datasets/deepscores_v2.zip
 kaggle.json
+.DS_Store
 training/datasets
 .pyc
 __pycache__/

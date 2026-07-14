@@ -1,0 +1,244 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================
+% NYCU / Arete Honors Program Project Paper Template
+% Compiler: XeLaTeX
+% 使用方式：
+% 1. 修改「基本資料」區塊。
+% 2. 替換摘要、關鍵字、各章正文與參考文獻。
+% 3. Overleaf 請使用 XeLaTeX，並至少 Recompile 兩次以更新目錄。
+% ============================================================
+
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm,footskip=1cm]{geometry}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{zhnumber}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{caption}
+
+\usetikzlibrary{arrows.meta,positioning}
+
+% ---------- 字體設定 ----------
+% Overleaf 若缺少 Noto Serif CJK TC，可改成 AR PL UMing TW 或其他可用中文字體。
+\setCJKmainfont{Noto Serif CJK TC}
+\setmainfont{TeX Gyre Termes}
+
+% ---------- 基本版面 ----------
+\linespread{1.3}
+\pagestyle{empty}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=2em}
+\setlist[enumerate]{leftmargin=2em}
+\captionsetup{font=small,labelfont=bf}
+
+% ---------- 章節與目錄 ----------
+\renewcommand{\thesection}{第\zhnum{section}章\hspace{0.5em}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+\titleformat{\section}{\Large\bfseries}{\thesection}{0em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.75em}{}
+\setlength{\cftsecnumwidth}{4.5em}
+\setlength{\cftsubsecnumwidth}{3em}
+
+\renewcommand{\contentsname}{\hfill 目錄\hfill\null}
+\renewcommand{\listfigurename}{\hfill 圖目錄\hfill\null}
+\renewcommand{\listtablename}{\hfill 表目錄\hfill\null}
+\renewcommand{\figurename}{圖}
+\renewcommand{\tablename}{表}
+\renewcommand{\refname}{參考文獻}
+
+% ============================================================
+% 基本資料：之後使用模板時主要改這裡
+% ============================================================
+\newcommand{\schoolzh}{國立陽明交通大學}
+\newcommand{\programzh}{博雅書苑百川學士學位學程}
+\newcommand{\coursezh}{專題探索（一）}
+\newcommand{\programen}{Arete Honors Program}
+\newcommand{\schoolen}{National Yang Ming Chiao Tung University}
+\newcommand{\courseen}{Project Exploration (I)}
+
+\newcommand{\papertitlelineone}{Your English Paper Title Line One}
+\newcommand{\papertitlelinetwo}{Your English Paper Title Line Two}
+
+\newcommand{\studentname}{學生姓名}
+\newcommand{\advisorname}{指導教授姓名}
+\newcommand{\semester}{2026 Spring}
+
+\begin{document}
+
+% ============================================================
+% 封面
+% ============================================================
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace{0.6cm}
+
+    \fontsize{18}{22}\selectfont \schoolzh \\
+    \fontsize{18}{22}\selectfont \programzh \\
+    \fontsize{18}{22}\selectfont \coursezh \\
+
+    \vspace{1cm}
+
+    \fontsize{14}{17}\selectfont \programen \\
+    \fontsize{16}{19}\selectfont \schoolen \\
+    \fontsize{16}{19}\selectfont \courseen \\
+
+    \vspace{3.1cm}
+
+    \fontsize{18}{22}\selectfont \papertitlelineone \\
+    \fontsize{18}{22}\selectfont \papertitlelinetwo \\
+
+    \vspace{3.1cm}
+
+    \begin{tabular}{@{}r@{\hspace{0.8em}}c@{\hspace{0.8em}}l@{}}
+    \makebox[4em][s]{學\hfill 生} & ： & \studentname \\
+    \makebox[4em][s]{指導教授} & ： & \advisorname \\
+    \end{tabular}
+
+    \vfill
+
+    \fontsize{18}{22}\selectfont \semester\\
+  \end{center}
+\end{titlepage}
+
+% ============================================================
+% 前置頁：中文摘要、目錄、圖目錄、表目錄
+% ============================================================
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{中文摘要}
+\section*{\centering 中文摘要}
+請在此撰寫中文摘要。摘要宜簡要說明研究背景、研究問題、研究方法、主要結果與貢獻。若依正式論文規範，可控制在一頁以內，並在摘要後列出 5 至 7 個關鍵字。
+
+\noindent\textbf{關鍵字：}關鍵字一、關鍵字二、關鍵字三、關鍵字四、關鍵字五
+
+\newpage
+\tableofcontents
+
+\newpage
+\addcontentsline{toc}{section}{圖目錄}
+\listoffigures
+
+\newpage
+\addcontentsline{toc}{section}{表目錄}
+\listoftables
+
+% ============================================================
+% 正文：從第一章開始使用阿拉伯數字頁碼
+% ============================================================
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{緒論}
+
+\subsection{研究背景}
+請說明研究主題的背景、重要性，以及目前問題所在。此段可包含領域現況、實務需求、學術缺口或課程脈絡。
+
+\subsection{研究問題}
+請明確列出本研究欲回答的核心問題。可使用一段文字描述，也可使用條列式呈現。
+
+\subsection{研究目的與貢獻}
+請說明本研究的目的與預期貢獻。例如：
+\begin{itemize}
+  \item 貢獻一。
+  \item 貢獻二。
+  \item 貢獻三。
+\end{itemize}
+
+\section{文獻探討}
+
+\subsection{相關研究一}
+請整理與本研究直接相關的文獻，並指出其方法、發現與限制。例如可使用引用格式 \cite{example2026paper}。
+
+\subsection{相關研究二}
+請比較不同研究之間的差異，並說明本研究如何延伸或補足既有工作。
+
+\section{研究方法}
+
+\subsection{研究架構}
+請說明整體研究流程。若需要流程圖，可參考圖 \ref{fig:pipeline-example}。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={draw, rounded corners, align=center, minimum width=3.2cm, minimum height=1cm},
+    arrow/.style={-Latex, thick}
+  ]
+    \node[box] (input) {輸入資料};
+    \node[box, right=of input] (method) {研究方法};
+    \node[box, right=of method] (output) {分析結果};
+    \draw[arrow] (input) -- (method);
+    \draw[arrow] (method) -- (output);
+  \end{tikzpicture}
+  \caption{研究流程示意圖}
+  \label{fig:pipeline-example}
+\end{figure}
+
+\subsection{資料與工具}
+請描述使用的資料、工具、模型、實驗環境或分析方法。
+
+\subsection{實作或分析流程}
+請詳細說明實作步驟、演算法流程、系統架構或分析程序。
+
+\section{實驗結果與分析}
+
+\subsection{結果呈現}
+請呈現主要結果。若需要表格，可參考表 \ref{tab:result-example}。
+
+\begin{table}[htbp]
+  \centering
+  \caption{實驗結果範例表}
+  \label{tab:result-example}
+  \begin{tabular}{lcc}
+    \toprule
+    方法 & 指標一 & 指標二 \\
+    \midrule
+    方法 A & 0.80 & 0.75 \\
+    方法 B & 0.85 & 0.78 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{結果討論}
+請解釋結果代表的意義，並說明是否符合研究預期。
+
+\section{討論}
+
+\subsection{研究發現}
+請整理本研究的主要發現，並連結回研究問題。
+
+\subsection{限制}
+請說明資料、方法、實作、評估或理論上的限制。
+
+\section{結論與未來工作}
+請總結本研究完成的工作、主要貢獻，以及未來可以延伸的方向。
+
+\clearpage
+\addcontentsline{toc}{section}{參考文獻}
+\begin{thebibliography}{99}
+
+\bibitem{example2026paper}
+Author Name.
+\newblock Paper Title.
+\newblock \textit{Conference or Journal Name}, Year.
+
+\end{thebibliography}
+
+\end{document}

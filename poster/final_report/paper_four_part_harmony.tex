@@ -1,0 +1,501 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm,footskip=1cm]{geometry}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{zhnumber}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{caption}
+
+\usetikzlibrary{arrows.meta,positioning}
+\graphicspath{{../figures/}{IMG/}{music-app/poster/figures/}}
+
+\setCJKmainfont{Noto Serif CJK TC}
+\setmainfont{TeX Gyre Termes}
+
+\linespread{1.3}
+\pagestyle{empty}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=2em}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\prototypeimage}[2][]{%
+  \IfFileExists{#2}{%
+    \includegraphics[#1]{#2}%
+  }{%
+    \IfFileExists{IMG/#2}{%
+      \includegraphics[#1]{IMG/#2}%
+    }{%
+      \IfFileExists{../figures/#2}{%
+        \includegraphics[#1]{../figures/#2}%
+      }{%
+        \IfFileExists{music-app/poster/figures/#2}{%
+          \includegraphics[#1]{music-app/poster/figures/#2}%
+        }{%
+          \fbox{\parbox[c][0.24\textheight][c]{0.88\linewidth}{\centering 圖片檔案未上傳\\\texttt{#2}}}%
+        }%
+      }%
+    }%
+  }%
+}
+
+\renewcommand{\thesection}{第\zhnum{section}章\hspace{0.5em}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{0em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.75em}{}
+\renewcommand{\abstractname}{中文摘要}
+\renewcommand{\contentsname}{\hfill 目錄\hfill\null}
+\renewcommand{\listfigurename}{\hfill 圖目錄\hfill\null}
+\renewcommand{\listtablename}{\hfill 表目錄\hfill\null}
+\renewcommand{\figurename}{圖}
+\renewcommand{\tablename}{表}
+\renewcommand{\refname}{參考文獻}
+\setlength{\cftsecnumwidth}{4.5em}
+\setlength{\cftsubsecnumwidth}{3em}
+
+\begin{document}
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace{0.6cm}
+
+    \fontsize{18}{22}\selectfont 國立陽明交通大學 \\
+    \fontsize{18}{22}\selectfont 博雅書苑百川學士學位學程 \\
+    \fontsize{18}{22}\selectfont 專題探索（一） \\
+
+    \vspace{1cm}
+
+    \fontsize{14}{17}\selectfont Arete Honors Program \\
+    \fontsize{16}{19}\selectfont National Yang Ming Chiao Tung University \\
+    \fontsize{16}{19}\selectfont Project Exploration (I) \\
+
+    \vspace{3.1cm}
+
+    \fontsize{18}{22}\selectfont An Automatic Four-Part Harmony Grading System \\
+    \fontsize{18}{22}\selectfont Integrating Deep Learning-Based Optical Music Recognition and Rule-Based Analysis \\
+
+    \vspace{3.1cm}
+
+    \begin{tabular}{@{}r@{\hspace{0.8em}}c@{\hspace{0.8em}}l@{}}
+    \makebox[4em][s]{學\hfill 生} & ： & 馬筱詩 \\
+    \makebox[4em][s]{指導教授} & ： & 林明學 \\
+    \end{tabular}
+
+    \vfill
+
+    \fontsize{18}{22}\selectfont 2026 Spring\\
+  \end{center}
+\end{titlepage}
+
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{摘要}
+\section*{\centering 摘要}
+四部和聲是音樂理論教育中的核心訓練之一，學生在寫作時必須同時處理音高、節奏、聲部配置、和弦功能與前後脈絡，教師在批改時也需要逐拍檢查聲部進行、平行完全音程、導音解決、和弦音重複與聲部交錯等規則。這類作業具有明確規則，卻不容易被一般自動偵錯系統處理，原因在於系統必須先從樂譜影像中辨識音樂符號，再將符號組織為女高音、女低音、男高音與男低音四個聲部，最後才能進行和聲規則判斷。既有光學樂譜辨識（Optical Music Recognition, OMR）研究多聚焦於符號偵測、樂譜轉譯或端到端轉錄，較少直接面向四部和聲教學所需的錯誤定位與規則說明。
+
+本研究提出一套整合深度學習 OMR 與規則和聲分析的自動四部和聲偵錯系統。系統以前端拍攝或上傳樂譜作為輸入，經影像前處理與 YOLO-based OMR 模型進行符號偵測，再透過符號至聲部組裝流程建立 SATB 結構化表示，最後由規則引擎檢查旋律跳進、聲部交錯或重疊、平行五度與八度、隱伏完全音程、和弦音重複與導音解決等代表性錯誤。與只輸出總分或對錯判定的系統不同，本研究強調可解釋回饋，將錯誤對應至小節、拍點與聲部，並提供規則原因與修正方向。初步模型評估顯示，OMR 模型之 mAP50 為 0.7763、mAP50--95 為 0.7320、Precision 為 0.9570、Recall 為 0.5760，結果表示偵測結果具有較高可信度，但漏檢仍是限制後續和聲分析穩定性的主要因素。本文最後討論系統限制與未來擴充方向，包含提升小型符號召回率、強化聲部組裝、擴充和聲規則集，以及部署於課堂與自主練習情境。
+
+\noindent\textbf{關鍵字：}四部和聲、光學樂譜辨識、深度學習、YOLO、規則式分析、音樂教育、自動偵錯
+
+\newpage
+\tableofcontents
+\newpage
+\addcontentsline{toc}{section}{圖目錄}
+\listoffigures
+\newpage
+\addcontentsline{toc}{section}{表目錄}
+\listoftables
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{緒論}
+
+\subsection{研究背景}
+
+四部和聲是西方調性音樂訓練中常見的基礎課題。學生通常需要在指定低音、和弦級數或旋律條件下，完成女高音（Soprano）、女低音（Alto）、男高音（Tenor）與男低音（Bass）四個聲部的配置。此訓練的目標不只是填入正確和弦音，更重要的是培養學生對聲部獨立性、和聲功能、音程穩定性與音樂語法的敏感度。因此，四部和聲作業同時具有「規則明確」與「判斷複雜」兩種特性。
+
+在教學現場中，教師批改四部和聲通常必須逐拍檢查樂譜，一次批改不只要看單一音符是否屬於正確和弦，也要觀察相鄰聲部是否交錯、外聲部是否形成平行五度或平行八度、導音是否依規則解決、和弦三音是否被不當省略，以及聲部是否出現不自然跳進。若學生人數較多，批改負擔會明顯增加，若學生只能在下一次課堂才收到回饋，也會降低修正與理解規則的即時性。
+
+隨著深度學習與電腦視覺技術發展，光學樂譜辨識已能處理越來越多樂譜影像任務。OMR 系統可從掃描譜或拍攝影像中偵測音符、譜號、調號、節奏與其他音樂符號，並進一步轉換為可供電腦處理的音樂資料。然而，四部和聲評分需要的並非單純符號辨識，而是從影像、符號、聲部到和聲規則的一連串語意轉換。換言之，系統必須知道某個音符不只是「被偵測到的符號」，還必須知道它位於哪一拍、屬於哪一聲部、與其他聲部形成何種音程關係，才能判斷是否違反和聲規則。
+
+\subsection{研究問題}
+
+本研究關注的核心問題是：如何將一張四部和聲樂譜影像，轉換為可定位且可解釋的和聲錯誤回饋。此問題可拆解為三個子問題。第一，系統如何從手寫或掃描樂譜中取得足夠可靠的音樂符號資訊。第二，系統如何將偵測到的符號轉換成 SATB 四聲部資料，而不是只停留在影像座標或符號類別。第三，系統如何根據四部和聲規則產生教學上可理解的錯誤說明，而非只給予分數或二元判定？
+
+這三個問題分別對應到本研究的三個技術層次：深度學習式符號偵測、結構化音樂表示，以及規則式和聲分析。若只解決第一層，系統仍只是 OMR 工具。若缺少第二層，符號偵測結果無法進入音樂語法分析。若缺少第三層，系統則難以真正支援和聲學習。因此，本研究採取模組化設計，使各層可以分別改善，同時保持資料流的一致性。
+
+\subsection{研究目的與貢獻}
+
+本研究目的包括以下四項。第一，建立以 YOLO 為基礎的 OMR 偵測流程，辨識樂譜影像中的關鍵音樂符號。第二，設計符號至聲部組裝方法，將偵測結果轉換為包含小節、拍點、音高與聲部標籤的 SATB 結構化資料。第三，實作規則式和聲分析引擎，用以檢查常見四部和聲錯誤。第四，建立網頁式原型介面，讓使用者能拍攝或上傳樂譜，並檢視錯誤定位、規則解釋與修正建議。
+
+本文的主要貢獻如下：
+
+\begin{itemize}
+  \item 提出一個由 OMR、聲部組裝、規則分析與使用者回饋組成的四部和聲自動評分架構。
+  \item 將樂譜影像辨識結果轉換為 SATB 四聲部資料，使電腦視覺輸出能進入音樂理論分析。
+  \item 整理並實作代表性和聲錯誤規則，包含旋律跳進、聲部交錯或重疊、平行完全音程、隱伏完全音程、三和弦重複或省略、導音解決等。
+  \item 設計可解釋回饋格式，使系統輸出不只包含錯誤種類，也包含錯誤位置、涉及聲部、規則說明與修正方向。
+\end{itemize}
+
+\section{文獻探討}
+
+\subsection{光學樂譜辨識}
+
+OMR 是將樂譜影像轉換為結構化音樂資訊的研究領域。傳統 OMR 流程通常包含影像前處理、五線譜偵測、符號分割、符號分類與音樂語意重建。近年深度學習方法逐漸取代大量手工特徵，使系統能在更複雜的影像條件下辨識音樂符號。Shatri 與 Fazekas \cite{shatri2020omr} 指出，OMR 的主要挑戰不只在於符號分類，也包含資料集差異、手寫變異、符號之間的上下文關係與音樂語法重建。這些挑戰在四部和聲場景中特別明顯，因為同一時間點可能存在多個聲部，且不同聲部的音符可能在垂直方向上非常接近。
+
+Mayer 等人 \cite{mayer2024practical} 探討端到端 OMR 在鋼琴譜上的實作可能，顯示深度學習模型能有效推進樂譜轉錄任務。然而，端到端轉錄不一定直接適合四部和聲批改。四部和聲教學需要的不只是完整樂譜重建，更需要錯誤位置與規則原因。因此，本研究選擇將 OMR 視為系統中的第一階段，並在其後加入聲部結構與規則分析。
+
+\subsection{和聲辨識與音樂語法分析}
+
+和聲分析研究通常關注和弦辨識、調性判定、功能和聲或音樂序列模型。Chen 與 Su \cite{chen2019harmony} 提出的 Harmony Transformer 將和弦分段納入和聲辨識，說明音樂事件的時間切分與上下文建模對和聲任務十分重要。對本研究而言，四部和聲錯誤偵錯同樣仰賴時間脈絡，例如平行五度不是單一時間點能判斷的錯誤，而是兩個聲部在連續時間點維持完全五度關係所形成的結果。
+
+不過，本研究與一般和聲辨識任務不同。和聲辨識多半試圖判斷音樂片段的和弦標籤或功能，而四部和聲批改則要判斷學生作品是否違反特定教學規則。這使得可解釋性變得比單純分類準確率更重要。若系統只指出某小節「錯誤」，學生仍難以理解問題，若系統能指出「Soprano 與 Bass 於第 1 小節第 2 拍到第 3 拍形成平行五度」，則回饋具有較高教學價值。
+
+\subsection{自動評分與可解釋回饋}
+
+教育科技中的自動評分系統常用於選擇題、程式作業或語言寫作。這些任務的共同目標是減少教師批改負擔並提供即時回饋。四部和聲也具有自動化評分的潛力，因為許多初階規則可以形式化，但它同時也具有音樂語境與風格例外，使系統不宜只追求單一正解。本研究因此將系統定位為「輔助批改與學習回饋工具」，而不是取代教師的最終評判。
+
+在此定位下，系統設計的核心並非給出絕對分數，而是將可能違規的地方清楚標出。教師可利用系統快速檢查學生作品，學生也可依據系統提示回到樂譜中修正。這種回饋形式兼顧規則清楚性與教學彈性，也符合四部和聲學習中反覆修改、比較與聆聽的實作特徵。
+
+\section{系統架構與研究方法}
+
+本系統採取模組化設計，將影像辨識、音樂結構重建、規則分析與介面回饋分離，使各模組能獨立改善。整體流程如圖 \ref{fig:pipeline} 所示。使用者首先拍攝或上傳四部和聲樂譜，系統進行影像前處理後，透過 YOLO-based OMR 模型偵測音符與相關符號。接著，系統根據符號位置、音高、拍點與譜表資訊，將辨識結果組裝為 SATB 四聲部資料。最後，規則引擎根據結構化資料逐拍檢查和聲規則，並輸出局部錯誤、規則說明與修正建議。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={draw, rounded corners, align=center, minimum width=3.2cm, minimum height=1cm},
+    arrow/.style={-Latex, thick}
+  ]
+    \node[box] (pre) {影像前處理};
+    \node[box, right=of pre] (det) {YOLO 符號偵測};
+    \node[box, right=of det] (asm) {符號至聲部組裝};
+    \node[box, below=of asm] (rule) {和聲規則引擎};
+    \node[box, left=of rule] (fb) {局部化回饋};
+
+    \draw[arrow] (pre) -- (det);
+    \draw[arrow] (det) -- (asm);
+    \draw[arrow] (asm) -- (rule);
+    \draw[arrow] (rule) -- (fb);
+  \end{tikzpicture}
+  \caption{自動四部和聲偵測系統流程}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{影像輸入與前處理}
+
+使用者輸入可能來自手機拍攝、掃描檔或上傳圖片。拍攝影像常見問題包括紙張傾斜、光線不均、陰影、透視變形與解析度不足。這些因素會影響音符邊界、五線譜位置與小型符號辨識。因此，前處理階段的目標是提高後續偵測穩定性，而不是改變樂譜內容本身。可採用的處理包括灰階化、對比增強、影像裁切、旋轉校正與尺寸標準化。
+
+在本研究原型中，前處理被視為可替換模組。若輸入為清楚的掃描譜，系統可減少前處理，若輸入為手機拍攝影像，則需要較多校正。此設計讓系統能同時支援課堂快速拍攝與較正式的檔案上傳。
+
+\subsection{YOLO-based OMR 符號偵測}
+
+OMR 模型負責從影像中偵測音樂符號，並輸出符號類別、邊界框座標與信心分數。本文採用 YOLO-based 偵測模型作為基礎，原因在於 YOLO 系列模型具備即時物件偵測能力，適合用於網頁或行動端原型展示。對四部和聲批改而言，系統需要辨識的符號不一定涵蓋完整出版樂譜的所有類別，但至少需要取得音符位置、音符頭、升降記號、休止符、譜號與小節線等資訊。
+
+符號偵測結果可表示為
+\[
+  d_i = (c_i, x_i, y_i, w_i, h_i, s_i),
+\]
+其中 $c_i$ 為符號類別，$(x_i,y_i)$ 為邊界框中心，$w_i$ 與 $h_i$ 為寬高，$s_i$ 為模型信心分數。後續模組不直接依賴影像像素，而是依賴這些偵測結果進行音高估計、拍點對齊與聲部組裝。
+
+\subsection{符號至聲部組裝}
+
+四部和聲分析的關鍵不只是辨識音符，而是判定每個音符屬於哪一聲部。若系統只知道畫面上有若干音符，仍無法判斷平行五度或導音解決，因為這些規則都與特定聲部的前後移動有關。本研究因此將符號至聲部組裝視為 OMR 與和聲分析之間的橋接步驟。
+
+組裝流程包含三個層次。第一，根據五線譜位置與譜號推估音高，將影像座標轉換為音樂音高。第二，根據水平位置、小節線與節奏資訊估計拍點，使同一時間點的音符能被組合為和弦快照。第三，根據譜表位置、音域、符桿方向與相鄰音符連續性推估聲部標籤。完成後，每個時間點可表示為
+\[
+  H_t = \{S_t, A_t, T_t, B_t\},
+\]
+其中 $S_t$、$A_t$、$T_t$ 與 $B_t$ 分別代表第 $t$ 個拍點中的女高音、女低音、男高音與男低音音高。
+
+\subsection{結構化資料格式}
+
+為了讓規則引擎能穩定運作，本研究定義每個音樂事件至少包含以下欄位：小節編號、拍點、聲部、音高、時值、來源符號框與信心分數。表 \ref{tab:data} 顯示一個概念化資料格式。此格式讓系統能在輸出錯誤時回指原始樂譜位置，也能在信心分數不足時提醒使用者重新確認辨識結果。
+
+\begin{table}[htbp]
+  \centering
+  \caption{四聲部音樂事件資料格式}
+  \label{tab:data}
+  \begin{tabular}{p{2.6cm}p{3.2cm}p{7.4cm}}
+    \toprule
+    欄位 & 範例 & 說明 \\
+    \midrule
+    measure & 1 & 小節編號。 \\
+    beat & 2 & 拍點或節奏位置。 \\
+    voice & Soprano & 聲部標籤，可為 Soprano、Alto、Tenor 或 Bass。 \\
+    pitch & G4 & 音高資料，可轉換為 MIDI number 或音名。 \\
+    duration & quarter & 音符時值。 \\
+    bbox & $(x,y,w,h)$ & 對應至原始影像中的符號位置。 \\
+    confidence & 0.96 & OMR 模型或聲部組裝的信心分數。 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{規則式和聲分析}
+
+規則引擎接收結構化的四聲部資料後，依據代表性和聲規則進行檢查。表 \ref{tab:rules} 列出目前實作的主要規則類型。
+
+\begin{table}[htbp]
+  \centering
+  \caption{規則引擎之代表性和聲檢查項目}
+  \label{tab:rules}
+  \begin{tabular}{>{\bfseries}p{1.4cm}p{4.2cm}p{7.2cm}}
+    \toprule
+    編號 & 規則類型 & 說明 \\
+    \midrule
+    M1 & 旋律跳進限制 & 偵測單一聲部中過大的跳進或不穩定音程。 \\
+    V1 & 聲部交錯與重疊 & 檢查相鄰聲部是否發生交錯或前後音域重疊。 \\
+    P1 & 平行五度與八度 & 偵測兩聲部之間連續形成完全五度或完全八度。 \\
+    P2 & 隱伏五度與八度 & 檢查外聲部是否以同向進行進入完全音程。 \\
+    D1 & 三和弦重複與省略 & 檢查根音、三音、五音與導音的重複或省略是否合宜。 \\
+    L1 & 導音解決 & 檢查導音是否依規則向主音解決。 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+系統回饋並非只標示錯誤存在，而是進一步回傳錯誤所屬聲部、發生的小節與拍點、違反的規則類型，以及可供學生理解的自然語言說明。例如在偵測到平行五度時，系統會指出涉及的兩個聲部，說明兩聲部雖然分別移動，卻在連續時間點維持完全五度關係，因而削弱聲部獨立性。這種設計使自動評分結果更接近教學回饋，而非單純的分類輸出。
+
+\subsection{旋律與聲部範圍規則}
+
+旋律跳進檢查主要觀察單一聲部在相鄰時間點的移動。若某一聲部出現過大跳進，或跳進後沒有適當反向級進補償，系統會將其標記為可能不自然的旋律進行。此規則不一定代表絕對錯誤，因為實際作品可能因風格或旋律需求而使用較大跳進。然而，在初階四部和聲訓練中，過大跳進通常需要提醒學生檢查。
+
+聲部交錯與重疊則檢查相鄰聲部之間的音域關係。若 Alto 高於 Soprano，或 Tenor 高於 Alto，即構成聲部交錯。若某一聲部移動到前一時間點相鄰聲部的位置之外，則可能形成聲部重疊。這類錯誤會降低四個聲部的清晰度，也是和聲作業中常見的基本檢查項目。
+
+\subsection{平行與隱伏完全音程}
+
+平行五度與平行八度是四部和聲訓練中最典型的錯誤之一。系統會針對任意兩個聲部，計算相鄰時間點的音程。若兩聲部在 $t$ 與 $t+1$ 皆形成完全五度或完全八度，且兩聲部皆有移動，即標記為平行完全音程。此規則可形式化為：若
+\[
+  I(v_1^t,v_2^t) \in \{7, 12\}
+\]
+且
+\[
+  I(v_1^{t+1},v_2^{t+1}) \in \{7, 12\},
+\]
+同時 $v_1^t \neq v_1^{t+1}$ 且 $v_2^t \neq v_2^{t+1}$，則系統回傳平行完全音程警示。其中 $I$ 表示兩音之間的半音距離取模後對應之音程類型。
+
+隱伏五度與隱伏八度則主要檢查外聲部，即 Soprano 與 Bass。若外聲部同向進行並到達完全五度或完全八度，尤其當高聲部以跳進抵達目標音時，通常會被視為需要避免的寫法。相較於平行完全音程，隱伏完全音程的判斷更依賴教學脈絡，因此系統輸出時以「警示」形式呈現，讓教師或學生進一步確認。
+
+\subsection{和弦音與導音規則}
+
+四部和聲中的垂直配置需要檢查和弦音是否完整，以及哪些音被重複。以三和弦為例，初階寫作通常重視根音、三音與五音的合理配置，並避免不當重複導音。若系統能取得和弦標籤或低音功能，即可判斷當前快照中的音高集合是否符合預期和弦。若缺少和弦標籤，系統仍可先檢查較一般性的問題，例如同一和弦中是否出現明顯不屬於和弦的音，或是否缺少必要音。
+
+導音解決規則則檢查調性中的第七音是否向上解決至主音。若某聲部出現導音，下一個穩定時間點卻未解決至主音，系統會標記為導音未解決。由於導音在不同和聲脈絡中可能有例外，本研究原型以常見初階規則為主，並在回饋中保留「建議檢查」語氣，避免將所有非標準進行都視為絕對錯誤。
+
+\subsection{錯誤輸出格式}
+
+每一筆錯誤輸出包含錯誤代碼、錯誤名稱、小節、拍點、涉及聲部、對應影像位置、規則說明與修正建議。表 \ref{tab:feedback} 顯示概念化輸出範例。這種格式使前端能同時顯示列表與樂譜定位，也方便未來匯出成批改報告。
+
+\begin{table}[htbp]
+  \centering
+  \caption{錯誤回饋輸出範例}
+  \label{tab:feedback}
+  \begin{tabular}{p{2.3cm}p{3.2cm}p{7.7cm}}
+    \toprule
+    欄位 & 範例 & 說明 \\
+    \midrule
+    rule\_id & P1 & 規則代碼。 \\
+    location & 第 1 小節第 2 拍 & 錯誤發生位置。 \\
+    voices & Soprano / Bass & 涉及聲部。 \\
+    message & 平行五度 & 使用者可讀的錯誤名稱。 \\
+    explanation & 兩聲部同向移動後仍維持完全五度，可能削弱聲部獨立性。 & 規則原因。 \\
+    suggestion & 檢查外聲部是否可改為反向或斜向進行。 & 修正方向。 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{原型系統}
+
+本研究建立一個網頁式原型以展示完整評分流程。使用者可透過介面拍攝手寫譜或上傳樂譜影像，系統完成辨識後，會顯示偵測結果與信心程度，並在樂譜上標出疑似錯誤區域。使用者點選錯誤項目後，可查看規則名稱、涉及聲部、錯誤原因與下一步修正建議。
+
+此介面設計的重點在於降低學習者理解錯誤的成本。四部和聲錯誤往往不是單一音符本身錯誤，而是兩個以上聲部在前後時間點形成不合規則的關係。因此，若系統只列出錯誤代碼，學生仍需自行回到樂譜中尋找脈絡。本原型透過錯誤定位與規則解釋，將抽象規則連結到具體樂譜位置，提升回饋的可用性。
+
+\subsection{使用流程}
+
+原型介面可分為四個主要畫面。第一是樂譜輸入畫面，使用者可選擇拍攝手寫譜或上傳檔案。第二是拍攝與對齊畫面，系統提示使用者將樂譜置於框線內，以提高辨識品質。第三是辨識檢閱畫面，系統顯示已辨識小節數、疑似錯誤數與整體信心程度，並在樂譜縮圖上標記錯誤區域。第四是錯誤詳情畫面，使用者點選某一錯誤後，可看到規則名稱、涉及聲部、錯誤解釋與修正建議。主要介面如圖 \ref{fig:interface-example} 所示，整體使用流程則如圖 \ref{fig:prototype-flow} 所示。
+
+\begin{figure}[p]
+  \centering
+  \begin{minipage}{0.43\textwidth}
+    \centering
+    \prototypeimage[width=\linewidth,keepaspectratio]{prototype_input_home.png}\\
+    \small (a) 樂譜輸入首頁
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.43\textwidth}
+    \centering
+    \prototypeimage[width=\linewidth,keepaspectratio]{prototype_score_capture.png}\\
+    \small (b) 樂譜拍攝與對齊
+  \end{minipage}
+
+  \vspace{0.45cm}
+
+  \begin{minipage}{0.43\textwidth}
+    \centering
+    \prototypeimage[width=\linewidth,keepaspectratio]{prototype_recognition_review.png}\\
+    \small (c) 辨識檢閱與錯誤定位
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.43\textwidth}
+    \centering
+    \prototypeimage[width=\linewidth,keepaspectratio]{prototype_issue_detail.png}\\
+    \small (d) 規則說明與修正建議
+  \end{minipage}
+  \caption{原型系統介面截圖}
+  \label{fig:interface-example}
+\end{figure}
+
+這種流程將 OMR 的不確定性納入使用者經驗中。若辨識信心偏低，系統不應直接給出強烈判斷，而應提醒使用者重新拍攝或人工確認。此設計對教育場景尤其重要，因為錯誤回饋若建立在錯誤辨識上，反而可能造成學生困惑。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.85cm,
+    flowstep/.style={draw, rounded corners, align=center, minimum width=3.15cm, minimum height=1.05cm},
+    arrow/.style={-Latex, thick}
+  ]
+    \node[flowstep] (input) {樂譜輸入\\拍攝或上傳};
+    \node[flowstep, right=of input] (capture) {拍攝對齊\\確認影像品質};
+    \node[flowstep, right=of capture] (review) {辨識檢閱\\標記疑似錯誤};
+    \node[flowstep, right=of review] (detail) {錯誤詳情\\規則說明與建議};
+
+    \draw[arrow] (input) -- (capture);
+    \draw[arrow] (capture) -- (review);
+    \draw[arrow] (review) -- (detail);
+  \end{tikzpicture}
+  \caption{原型系統使用流程}
+  \label{fig:prototype-flow}
+\end{figure}
+
+\subsection{介面設計原則}
+
+介面設計遵循三個原則。第一，回饋必須定位到樂譜位置，使學生能立即知道要檢查哪一拍。第二，回饋必須說明規則原因，而不是只顯示代碼。第三，回饋應提供下一步方向，但避免直接宣稱唯一正解。四部和聲常有多種可接受改法，因此系統較適合扮演提示者，而不是取代學生的音樂判斷。
+
+例如，當系統偵測到 Soprano 與 Bass 之間可能形成平行五度時，介面會同時顯示樂譜位置與文字說明：「這兩個聲部在連續拍點中同向移動，並維持完全五度關係，可能削弱聲部獨立性。」接著提供修正方向：「可檢查其中一個聲部是否能改為反向進行、斜向進行，或調整內聲部配置。」圖 \ref{fig:interface-example} 呈現原型系統從樂譜輸入、拍攝對齊、辨識檢閱到錯誤詳情的主要畫面，說明系統如何將樂譜定位、錯誤列表與規則解釋整合於同一回饋流程中。
+
+\section{實驗設計與結果}
+
+目前 OMR 模型於清理後驗證集上的表現如表 \ref{tab:performance} 所示。評估指標包含 mAP50、mAP50--95、Precision 與 Recall。mAP50 反映模型在 IoU 門檻為 0.5 時的平均精度，mAP50--95 則使用更嚴格的多重 IoU 門檻，因此較能反映定位品質。Precision 表示模型偵測到的符號中有多少比例為正確偵測，Recall 則表示真實符號中有多少比例被成功找出。
+
+\begin{table}[htbp]
+  \centering
+  \caption{OMR 模型初步評估結果}
+  \label{tab:performance}
+  \begin{tabular}{cccc}
+    \toprule
+    mAP50 & mAP50--95 & Precision & Recall \\
+    \midrule
+    0.7763 & 0.7320 & 0.9570 & 0.5760 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+結果顯示模型具有較高的 Precision，代表偵測到的符號多半可靠。然而 Recall 仍偏低，表示仍有部分符號未被成功偵測。對四部和聲分析而言，漏檢可能造成後續聲部組裝與規則判斷錯誤，因此召回率是下一階段模型訓練的主要改善目標。
+
+從系統角度觀察，高 Precision 有助於降低錯誤偵測對規則引擎造成的干擾，因為被送入分析階段的符號較可能是真實音樂符號。然而，在四部和聲作業中，小型符號、手寫不清楚的音符、臨時記號或低頻類別若被漏檢，仍可能導致聲部資料不完整。例如，若某一拍的 Alto 音符漏檢，系統可能將該拍視為三聲部資料，進而影響和弦完整性判斷，若臨時升降記號漏檢，則可能造成音高估計錯誤，進一步影響導音解決或和弦音判定。
+
+\subsection{誤差來源分析}
+
+本研究觀察到，OMR 至和聲分析流程中的誤差可能來自三個層面。第一是視覺層誤差，例如符號模糊、音符重疊、拍攝角度不佳或小型符號未被偵測。第二是結構層誤差，例如音符被偵測到，但拍點或聲部歸屬判斷錯誤。第三是規則層誤差，例如系統依據簡化規則標記了某個在特定音樂語境中可接受的寫法。
+
+因此，評估此系統不能只看 OMR 指標，也需要未來進一步評估聲部組裝準確率與錯誤回饋有效性。理想上，可建立由教師標註的四部和聲資料集，其中包含正確聲部標籤、已知錯誤位置與錯誤類型，並以此測試系統是否能產生與教師一致的回饋。
+
+\subsection{教育應用分析}
+
+從教學角度看，本系統最直接的價值在於提供即時初步檢查。學生完成作業後，可先使用系統找出明顯規則問題，再帶著修正後的版本進入課堂討論。教師也可利用系統快速定位常見錯誤，把課堂時間留給較高層次的音樂性與風格判斷。
+
+不過，自動回饋不應取代教師解釋。四部和聲規則常有層級差異，有些錯誤是初學者必須避免的基本問題，有些則需要放在樂句、終止式或風格背景中討論。因此，本研究將系統定位為輔助工具：它可以提高檢查效率，也可以幫助學生養成自我檢查習慣，但最終仍需由教師引導學生理解規則背後的音樂原因。
+
+\section{討論}
+
+本系統的主要優勢在於將深度學習式符號辨識與可解釋規則分析結合。相較於只回傳分數的自動評分系統，本研究更重視錯誤定位與原因說明，使學生能理解作品中哪一個聲部、哪一個拍點、哪一種聲部關係造成違規。此設計也保留教師教學中的核心價值：指出規則背後的音樂理由，而非只做二元判斷。
+
+此外，本研究選擇規則式方法作為和聲分析核心，也有其理由。規則式方法容易對應到教學語言，能清楚說明錯誤原因。相較之下，若完全使用機器學習模型判斷和聲錯誤，雖可能學到複雜模式，但較難保證回饋能被學生理解。對初階四部和聲而言，規則透明性比黑箱準確率更符合教學需求。
+
+然而，目前系統仍有數項限制。第一，OMR 模型召回率仍需提升，尤其是小型或罕見符號。第二，符號至聲部組裝仍是重要挑戰，因為手寫譜中音符位置、符桿方向與聲部關係可能不一致。第三，現階段規則集以代表性錯誤為主，尚未涵蓋所有進階和聲現象，例如非和弦音、轉位脈絡、特定終止式與風格化例外。第四，規則式系統雖具可解釋性，但若缺乏足夠音樂語境，也可能將合理的作曲選擇誤判為錯誤。因此，未來仍需引入更完整的音樂語法與教師標註資料進行校正。
+
+\subsection{和弦外音的延伸問題}
+
+本研究目前主要以垂直和弦快照與聲部進行規則作為分析核心，因此較適合處理平行完全音程、聲部交錯、導音解決與和弦音重複等初階四部和聲問題。然而，實際和聲寫作中經常出現和弦外音（non-chord tone），例如經過音、鄰音、倚音、懸留音、先現音與延留音等。這些音在單一時間點上可能不屬於當下和弦，但若放回旋律線與節奏位置中觀察，卻可能是合理甚至必要的聲部裝飾。
+
+因此，若系統只以每一拍的和弦音集合判斷正誤，可能會將合法的和弦外音誤判為錯誤。未來若要處理此問題，規則引擎需要納入更細緻的時間與節奏條件，例如判斷該音是否位於弱拍、是否以級進進入與離開、是否形成懸留並正確解決，以及是否符合當前和聲功能。換言之，和弦外音分析不能只依靠垂直和弦快照，而必須結合水平旋律脈絡與局部節奏重音。本研究可將和弦外音辨識作為下一階段重要擴充，使系統從基本錯誤檢查逐步走向更完整的和聲語法分析。
+
+\subsection{系統完整性與可擴充性}
+
+由於本研究採取模組化架構，未來可在不重寫整體系統的前提下替換單一模組。例如，若未來 OMR 模型提升，可直接替換符號偵測器，若取得更多教師標註資料，可改善聲部組裝與規則判斷，若課程需求改變，也可新增特定規則，例如終止四六和弦、屬七和弦解決、非和弦音分類或轉調判斷。
+
+另一方面，模組化也使系統能保留人工介入空間。當模型信心不足時，使用者可先修正辨識結果，再進入和聲分析。這種人機協作流程比完全自動化更符合音樂教育場景，因為學生在修正辨識結果的過程中，也會重新檢查自己的樂譜結構。
+
+\section{結論與未來展望}
+
+本文提出一套整合深度學習式 OMR 與規則式和聲分析的自動四部和聲評分系統。系統從樂譜影像出發，辨識音樂符號，轉換為 SATB 四聲部結構化資料，並透過規則引擎偵測代表性和聲錯誤。研究重點不在於產生唯一正解，而是提供可定位且可解釋的學習回饋，使自動評分能更貼近音樂理論教學需求。
+
+本研究的初步結果顯示，OMR 模型在 Precision 上已有可用基礎，但 Recall 仍是限制系統穩定性的主要因素。對和聲分析而言，漏檢比誤檢更容易造成後續結構錯誤，因此未來需要針對小型符號、低頻類別與手寫變異進行資料增強與模型改善。同時，聲部組裝是連接視覺辨識與音樂理解的關鍵步驟，未來可結合規則、機率模型與人工校正介面提升可靠度。
+
+未來工作將朝四個方向推進。第一，改善小型與低頻樂譜符號的召回率。第二，強化 OMR 偵測結果至四聲部結構的轉換流程。第三，擴充規則集，納入和弦外音判斷、終止式、屬七和弦解決、轉位脈絡與更進階的和聲案例。其中和弦外音尤其需要結合旋律進出方式、節奏位置與解決方向，避免將合理的經過音、鄰音或懸留音誤判為錯誤。第四，將系統部署至更完整的行動或網頁應用情境，支援課堂教學與學生自主練習。長期而言，本系統可作為音樂理論學習中的輔助工具，幫助學生更快發現作品中的規則問題，也協助教師將批改時間轉化為更深入的音樂討論。
+
+\clearpage
+\addcontentsline{toc}{section}{參考文獻}
+\begin{thebibliography}{99}
+
+\bibitem{hsiao2023bps}
+Yo-Wei Hsiao, Tzu-Yun Hung, Tsung-Ping Chen, and Li Su.
+\newblock BPS-Motif: A Dataset for Repeated Pattern Discovery of Polyphonic Symbolic Music.
+\newblock \textit{Proceedings of the International Society for Music Information Retrieval Conference (ISMIR)}, November 2023.
+
+\bibitem{hu2025omr}
+Jin-Shiang Hu, Bo-Yuan Cheng, and Li Su.
+\newblock An Optical Music Recognition Tool for String Quartets.
+\newblock \textit{Late-Breaking/Demo Session of the International Society for Music Information Retrieval (ISMIR LBD)}, September 2025.
+
+\bibitem{lin2025texture}
+Zih-Syuan Lin, Jun-You Wang, and Li Su.
+\newblock A Comparative Study of Statistical Features and Deep Learning for Orchestral Texture Classification.
+\newblock \textit{Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)}, October 2025.
+
+\bibitem{wang2025motif}
+Jun-You Wang, Yu-Chia Kuo, and Li Su.
+\newblock Improving Motif Discovery of Symbolic Polyphonic Music with Motif Note Identification.
+\newblock \textit{Transactions of the International Society for Music Information Retrieval}, vol. 8, no. 1, pp. 353--371, September 2025.
+
+\bibitem{calvozaragoza2020understanding}
+Jorge Calvo-Zaragoza, Jan Hajič Jr., and Alexander Pacha.
+\newblock Understanding Optical Music Recognition.
+\newblock \textit{ACM Computing Surveys}, vol. 53, no. 4, Article 77, 2020.
+
+\bibitem{shatri2020omr}
+Elona Shatri and György Fazekas.
+\newblock Optical Music Recognition: State of the Art and Major Challenges.
+\newblock \textit{TENOR}, 2020.
+
+\bibitem{mayer2024practical}
+Jiří Mayer, Milan Straka, Jan Hajič, and Pavel Pecina.
+\newblock Practical End-to-End Optical Music Recognition for Pianoform Music.
+\newblock \textit{ICDAR}, 2024.
+
+\bibitem{chen2019harmony}
+Tsung-Ping Chen and Li Su.
+\newblock Harmony Transformer: Incorporating Chord Segmentation into Harmony Recognition.
+\newblock \textit{ISMIR}, 2019.
+
+\end{thebibliography}
+
+\end{document}
